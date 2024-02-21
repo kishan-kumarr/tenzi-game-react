@@ -1,4 +1,4 @@
-## This is really awesome fun game based on react you love this ##
+## This is really awesome, fun game based on react you love this ##
 
 # Prerequisite
 
