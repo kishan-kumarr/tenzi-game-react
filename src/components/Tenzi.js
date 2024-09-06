@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Dice from "./Dice";
 import { nanoid } from "nanoid";
 import WonTheGame from "./WonTheGame";
@@ -23,12 +23,24 @@ const Tenzi = () => {
 
   const [dice, setDice] = React.useState(allNewDice());
   const [isWon, setIsWon] = React.useState(false);
+  const [countTime, setCountTime] = React.useState(0);
+  const [counter, setCounter] = React.useState("");
 
   const cardStyle = {
     width: "500px",
   };
+  
+  useEffect(() => {
+    setTimeout(() => 
+      setCountTime((prev) => prev + 1), 
+    1000);
 
-  const roolDice = () => {
+  }, [countTime]);
+  
+
+  const roolDice = (e) => {
+    e.target.value === "Play again" && window.location.reload();
+
     if (!isWon) {
       setDice((preDice) => {
         return preDice.map((die) => {
@@ -36,6 +48,8 @@ const Tenzi = () => {
         });
       });
     } else {
+      setCountTime(0);
+      setCounter(0);
       setIsWon(false);
       setDice(allNewDice());
     }
@@ -52,6 +66,9 @@ const Tenzi = () => {
   React.useEffect(() => {
     if (dice.every((die) => die.isHeld && die.value === dice[0].value)) {
       setIsWon(true);
+      setCounter(countTime);
+      setCountTime(0);
+
       console.log("You won the Game");
     }
   }, [dice]);
@@ -69,7 +86,7 @@ const Tenzi = () => {
     <div className="container">
       <div className="card" style={cardStyle}>
         <div className="card-body">
-          <h3 className="card-title">Tenzi Game</h3>
+          <h3 className="card-title">Tenzi Game </h3>
           <hr />
           {!isWon && (
             <p className="card-text">
@@ -79,12 +96,16 @@ const Tenzi = () => {
           )}
           {isWon && (
             <>
-              <WonTheGame /> <Confetti />
+              <WonTheGame counter = {counter}/> <Confetti />
             </>
           )}
           {!isWon && allDice}
-          <button className="btn btn-primary roll--button" onClick={roolDice}>
-            {isWon ? "Play again" : "Roll"}
+          <button className="btn btn-primary roll--button" value={isWon ? "Play again" : "Roll"} onClick={roolDice}>
+            {
+              isWon ? 
+              "Play again" : "Roll"
+            }
+            
           </button>
         </div>
       </div>
